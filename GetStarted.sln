@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "Frontend\Fronte
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FED40CE6-18B1-4D02-8820-B88EFCEEED25}"
 	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
 		WE-Palette.css = WE-Palette.css
 		WebEssentials2015-Settings.json = WebEssentials2015-Settings.json
 	EndProjectSection
