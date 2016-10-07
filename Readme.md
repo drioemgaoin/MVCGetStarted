@@ -98,23 +98,9 @@ routes.MapRoute(
 ```
 
 ### Route Handler
+It is class returning the http handler that will handle the incoming request.
 
-### Http Handler
-
-It is a class that runs an response to a request.
-
-To create a custom http handler, we need to
-- Create a class that derives from IHttpHandler
-```C#
-public class MyHttpHandler: IHttpHandler
-{
-    public void ProcessRequest(HttpContext context)
-    {
-        // CODE HERE
-    }
-}
-```
-- Create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method
+To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method
 ```C#
 public class MyRouteHandler : IRouteHandler
 {
@@ -124,10 +110,30 @@ public class MyRouteHandler : IRouteHandler
     }
 }
 ```
-- Register the new route handler/url in the route collection
+
+Then, you need to associate this handler to the routes you want to apply with.
 ```C#
-routes.Add(new Route("newroute", new MyRouteHandler()));
+routes.Add(new Route("route", new MyRouteHandler()));
 ```
+
+MVC propose MVCRouteHandler as a default route handler.
+
+### Http Handler
+
+It is a class that runs a response to the incoming request.
+
+To create a custom http handler, you need to create a class that derives from IHttpHandler
+```C#
+public class MyHttpHandler: IHttpHandler
+{
+    public void ProcessRequest(HttpContext context)
+    {
+        context.Response.Redirect("https://github.com/drioemgaoin", true);
+    }
+}
+```
+
+MVC propose MVCHttpHandler as a default http handler. It is the entry point of MVC framework.
 
 ## Controller Initialization
 
