@@ -160,13 +160,21 @@ To create a custom controller factory, you need to:
 ```C#
 public class MyControllerFactory : IControllerFactory
 {
+    // You can use your favourite IoC tool to inject the dependencies needed by each controller
+    // Activator.CreateInstance(controller, dependencies)
+
     public IController CreateController(RequestContext requestContext, string controllerName)
     {
-        var controllername = requestContext.RouteData.Values["controller"].ToString();
+        var controllername = $"{requestContext.RouteData.Values["controller"]}Controller";
 
-        var controllerType = Type.GetType($"Frontend.Controllers.{controllername}Controller");
+        var controllers = GetControllers();
+        var controller = controllers.FirstOrDefault(x => x.Name == controllername);
+        if (controller != null)
+        {
+            return Activator.CreateInstance(controller) as IController;
+        }
 
-        return Activator.CreateInstance(controllerType) as IController;
+        return null;
     }
 
     public SessionStateBehavior GetControllerSessionBehavior(RequestContext requestContext, string controllerName)
@@ -178,6 +186,13 @@ public class MyControllerFactory : IControllerFactory
     {
         var dispose = controller as IDisposable;
         dispose?.Dispose();
+    }
+
+    private static IEnumerable<Type> GetControllers()
+    {
+        var myAssembly = Assembly.GetExecutingAssembly();
+        return myAssembly.GetTypes()
+            .Where(x => x.IsClass && x.Name.EndsWith("Controller")).ToList();
     }
 }
 ```
