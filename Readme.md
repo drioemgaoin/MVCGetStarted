@@ -120,7 +120,7 @@ MVC propose MVCRouteHandler as a default route handler.
 
 ### Http Handler
 
-It is a class that runs a response to the incoming request.
+It is a class that provides a response to the incoming request. 
 
 To create a custom http handler, you need to create a class that derives from IHttpHandler
 ```C#
@@ -134,6 +134,13 @@ public class MyHttpHandler: IHttpHandler
 ```
 
 MVC propose MVCHttpHandler as a default http handler. It is the entry point of MVC framework.
+
+There are two sets of events in the MVC request lifecycle that concerns HttpHandlers:
+- MapRequestHandler and PostMapRequestHandler: determines the httpHandler responsible for executing the request. Only the selection happens during this time.
+- RequestHandlerExecute and PostRequestHandlerExecute: executes the htttp handler determined in the earlier phases of request lifecycle.
+
+![Route Selection](./img/http-handler.jpg)
+
 
 ## Controller Initialization
 
