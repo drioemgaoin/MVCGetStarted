@@ -2,10 +2,10 @@
 
 namespace Frontend.Controllers
 {
-    public class HomeController : Controller
+    public class AccountController : Controller
     {
         [Route("", Name = "Index")]
-        public ActionResult Index()
+        public ActionResult Index(string user)
         {
             return View();
         }
