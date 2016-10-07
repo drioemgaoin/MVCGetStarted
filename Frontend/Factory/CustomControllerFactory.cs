@@ -6,20 +6,27 @@ using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
+using Frontend.Action;
 
 namespace Frontend.Factory
 {
-    public class MyControllerFactory : IControllerFactory
+    public class CustomControllerFactory : IControllerFactory
     {
         public IController CreateController(RequestContext requestContext, string controllerName)
         {
             var controllername = $"{requestContext.RouteData.Values["controller"]}Controller";
 
             var controllers = GetControllers();
-            var controller = controllers.FirstOrDefault(x => x.Name == controllername);
-            if (controller != null)
+            var controllerType = controllers.FirstOrDefault(x => x.Name == controllername);
+            if (controllerType != null)
             {
-                return Activator.CreateInstance(controller) as IController;
+                var controller = Activator.CreateInstance(controllerType) as IController;
+                if (controllerName == "TestActionInvoker")
+                {
+                    return ReplaceActionInvoker(controller);
+                }
+
+                return controller;
             }
 
             return null;
@@ -41,6 +48,17 @@ namespace Frontend.Factory
             var myAssembly = Assembly.GetExecutingAssembly();
             return myAssembly.GetTypes()
                 .Where(x => x.IsClass && x.Name.EndsWith("Controller")).ToList();
+        }
+
+        private static IController ReplaceActionInvoker(IController controller)
+        {
+            var mvcController = controller as Controller;
+            if (mvcController != null)
+            {
+                mvcController.ActionInvoker = new MyControllerActionInvoker();
+            }
+
+            return mvcController;
         }
     }
 }

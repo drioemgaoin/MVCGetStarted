@@ -162,25 +162,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\MyControllerActionInvoker.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Constraint\UserRouteConstraint.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Factory\MyControllerFactory.cs" />
+    <Compile Include="Controllers\TestActionInvokerController.cs" />
+    <Compile Include="Controllers\TestValueProviderController.cs" />
+    <Compile Include="Factory\CustomControllerFactory.cs" />
+    <Compile Include="Factory\CustomValueProviderFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handler\GithubHttpHandler.cs" />
     <Compile Include="Handler\GithubRouteHandler.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Module\LogHttpModule.cs" />
     <Compile Include="Module\LogHttpModuleRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ValueProvider\CustomValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -217,9 +220,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\TestValueProvider\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\TestActionInvoker\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

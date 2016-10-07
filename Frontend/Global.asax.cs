@@ -14,7 +14,8 @@ namespace Frontend
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            ControllerBuilder.Current.SetControllerFactory(typeof(MyControllerFactory));
+            ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
+            ValueProviderFactories.Factories.Add(new CustomValueProviderFactory());
         }
     }
 }

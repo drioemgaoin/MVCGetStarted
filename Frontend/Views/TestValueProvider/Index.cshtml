@@ -1,0 +1,12 @@
+﻿@model Frontend.Models.UserModel
+
+@using (Html.BeginForm("Index", "TestValueProvider", FormMethod.Post))
+{
+    <div>
+        <div>
+            <label>Name</label>
+            @Html.TextBoxFor(x => x.Name)
+        </div>
+        <input type="submit" value="Submit" />
+    </div>            
+}
