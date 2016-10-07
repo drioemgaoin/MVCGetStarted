@@ -100,7 +100,7 @@ routes.MapRoute(
 ### Route Handler
 It is class returning the http handler that will handle the incoming request.
 
-To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method
+To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method.
 ```C#
 public class MyRouteHandler : IRouteHandler
 {
@@ -116,13 +116,13 @@ Then, you need to associate this handler to the routes you want to apply with.
 routes.Add(new Route("route", new MyRouteHandler()));
 ```
 
-MVC propose MVCRouteHandler as a default route handler.
+MVC uses MVCRouteHandler as a default route handler.
 
 ### Http Handler
 
 It is a class that provides a response to the incoming request. 
 
-To create a custom http handler, you need to create a class that derives from IHttpHandler
+To create a custom http handler, you need to create a class that derives from IHttpHandler.
 ```C#
 public class MyHttpHandler: IHttpHandler
 {
@@ -133,7 +133,7 @@ public class MyHttpHandler: IHttpHandler
 }
 ```
 
-MVC propose MVCHttpHandler as a default http handler. It is the entry point of MVC framework.
+MVC uses MVCHttpHandler as a default http handler. It is the entry point of MVC framework.
 
 There are two sets of events in the MVC request lifecycle that concerns HttpHandlers:
 - MapRequestHandler and PostMapRequestHandler: determines the httpHandler responsible for executing the request. Only the selection happens during this time.
@@ -143,6 +143,48 @@ There are two sets of events in the MVC request lifecycle that concerns HttpHand
 
 
 ## Controller Initialization
+![Route Selection](./img/controller-initialization.jpg)
+
+Once the http handler determinated, it starts to process the request by inspecting the RequestContext to get the name of the Controller from the URL. 
+
+Then, it uses the ControllerBuilder to get the ControllerFactory instance. 
+
+Then, it passes the name of the Controller and RequestContext to the CreateController (ControllerFactory method) to create the controller by using Controller Activator and Dependency Resolver. If no dependency resolved was found then Controller Activator manually creates an instance of controller and returns it for execution. Once the controller has been initialized MvcHandler calls controller.Execute() method to begin processing execution.
+
+Finally, it calls the controller’s Execute method and passes the RequestContext to Controller.
+
+MVC uses DefaultControllerFactory as a default controller factory. 
+
+To create a custom controller factory, you need to:
+- Create a class that derives from IControllerFactory (or DefaultControllerFactory).
+```C#
+public class MyControllerFactory : IControllerFactory
+{
+    public IController CreateController(RequestContext requestContext, string controllerName)
+    {
+        var controllername = requestContext.RouteData.Values["controller"].ToString();
+
+        var controllerType = Type.GetType($"Frontend.Controllers.{controllername}Controller");
+
+        return Activator.CreateInstance(controllerType) as IController;
+    }
+
+    public SessionStateBehavior GetControllerSessionBehavior(RequestContext requestContext, string controllerName)
+    {
+        return SessionStateBehavior.Default;
+    }
+
+    public void ReleaseController(IController controller)
+    {
+        var dispose = controller as IDisposable;
+        dispose?.Dispose();
+    }
+}
+```
+- Set this factory as a new controller factory in Global.asax file.
+```C#
+ControllerBuilder.Current.SetControllerFactory(typeof(MyControllerFactory));
+```
 
 ## Action Execution
 

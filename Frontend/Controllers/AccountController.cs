@@ -4,7 +4,7 @@ namespace Frontend.Controllers
 {
     public class AccountController : Controller
     {
-        [Route("", Name = "Index")]
+        [Route("Account", Name = "Account")]
         public ActionResult Index(string user)
         {
             return View();

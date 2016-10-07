@@ -4,7 +4,7 @@ namespace Frontend.Controllers
 {
     public class HomeController : Controller
     {
-        [Route("", Name = "Index")]
+        [Route("", Name = "Home")]
         public ActionResult Index()
         {
             return View();

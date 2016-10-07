@@ -15,8 +15,7 @@ namespace Frontend
             routes.Add(new Route("mygithub", new GithubRouteHandler()));
 
             // Create Routes
-            MapRouteWithConstraint(routes);
-            //routes.MapMvcAttributeRoutes();
+            routes.MapMvcAttributeRoutes();
         }
 
         private static void CreateRoute(RouteCollection routes)
