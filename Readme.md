@@ -8,10 +8,10 @@
    2. [Controller Initialization](#controller-initialization)
    3. [Action Execution](#action-execution)
       1. [Action Invoker](#action-invoker)
-      2. [Model Binding](#modle-binding)
+      2. [Model Binding](#model-binding)
       3. [Filters](#filters)
-         1. [Filter filters](#filter-types)
-         2. [Existing types](#existing-filters)
+         1. [Filter types](#filter-types)
+         2. [Existing filters](#existing-filters)
          3. [Filter creation](#filter-creation)
             1. [Override OnXXX methods](#override-onxxx-methods)
             2. [Derive from ActionFilterAttribute](#derive-from-actionfilterattribute) 
@@ -403,7 +403,7 @@ ASP.NET MVC supports the following types of action filters:
   - OnResultExecuted - Runs after content is rendered to view.
 - Exception filters: This filter is used to capture any exceptions if raised by controller or an action method. These implement IExceptionFilter.
 
-#### Existing filter
+#### Existing filters
 Some filters are provided by Asp.Net implemented as attributes. The filters can be applied at the action method, controller, or application level.
 - AuthorizeAttribute: Restricts access by authentication and optionally authorization. (customErrors element need to enabled in the Web.config file to work)
 - HandleErrorAttribute: Specifies how to handle an exception that is thrown by an action method.
