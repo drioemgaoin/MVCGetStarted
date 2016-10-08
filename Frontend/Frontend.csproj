@@ -168,6 +168,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Binders\CustomModelBinder.cs" />
     <Compile Include="Constraint\CustomRouteConstraint.cs" />
+    <Compile Include="Controllers\TestFilterController.cs" />
     <Compile Include="Controllers\TestModelBindingController.cs" />
     <Compile Include="Controllers\TestRouteConstraintController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -175,12 +176,16 @@
     <Compile Include="Controllers\TestValueProviderController.cs" />
     <Compile Include="Factory\CustomControllerFactory.cs" />
     <Compile Include="Factory\CustomValueProviderFactory.cs" />
+    <Compile Include="Filter\CustomFilterProvider.cs" />
+    <Compile Include="Filter\CustomGlobalFilter.cs" />
+    <Compile Include="Filter\CustomActionFilterAtttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handler\CustomHttpHandler.cs" />
     <Compile Include="Handler\CustomRouteHandler.cs" />
     <Compile Include="Models\DateModel.cs" />
+    <Compile Include="Models\FilterModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Module\LogHttpModule.cs" />
     <Compile Include="Module\LogHttpModuleRegistration.cs" />
@@ -226,6 +231,7 @@
     <Content Include="Views\TestValueProvider\Index.cshtml" />
     <Content Include="Views\TestRouteConstraint\Result.cshtml" />
     <Content Include="Views\TestModelBinding\Index.cshtml" />
+    <Content Include="Views\TestFilter\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

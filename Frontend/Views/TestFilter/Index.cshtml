@@ -1,0 +1,16 @@
+﻿@model Frontend.Models.FilterModel
+
+<div style="margin: 50px">
+    <div>
+        <ul>
+            <li>@Html.ActionLink("Filter by overriding controller's handler", "FilterByOverrideMethod", "TestFilter")</li>
+            <li>@Html.ActionLink("Filter by creating custom action filter attribute", "FilterByCustomActionFilterAttribute", "TestFilter")</li>
+            <li>@Html.ActionLink("Filter by filter provider", "FilterByFilterProvider", "TestFilter")</li>
+            <li>@Html.ActionLink("Filter by global filter", "FilterByGlobalFilter", "TestFilter")</li>
+        </ul>
+    </div>
+    @if (Model.ExecutionTime != null)
+    {
+        <div>Action (@Model.MethodName) executed in @Model.ExecutionTime</div>
+    }
+</div>

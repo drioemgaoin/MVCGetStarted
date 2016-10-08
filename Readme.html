@@ -335,6 +335,197 @@ public ActionResult CustomRouteConstraint(string user)
 <p>Request data can come in a variety of formats including JSON, XML and many others. When you use the [FromBody] attribute to indicate that you want to bind a parameter to data in the request body, MVC uses a configured set of formatters to handle the request data based on its content type. By default MVC includes a JsonInputFormatter class for handling JSON data, but you can add additional formatters for handling XML and other custom formats.</p>
 <p>ASP.NET selects input formatters based on the Content-Type header and the type of the parameter.</p>
 <h3 id="filters">Filters</h3>
+<p>Filters are custom classes that provide both a declarative and programmatic means to add pre-action and post-action behavior to controller action methods.</p>
+<h4 id="filter-types">Filter types</h4>
+<p>ASP.NET MVC supports the following types of action filters:</p>
+<ul>
+<li>Authentication filters: to implement authentication. It runs before any other filter or action method. These implement IAuthenticationFilter.</li>
+<li>Authorization filters: to implement authorization. It runs after the Authentication filter and before any other filter or action method. These implement IAuthorizationFilter.</li>
+<li>Action filters:  These implements IActionFilter. It runs before and after any action method. There are 2 events available:
+<ul>
+<li>OnActionExecuting - Runs before execution of Action method.</li>
+<li>OnActionExecuted - Runs after execution of Action method.</li>
+</ul>
+</li>
+<li>Result filters: These implements IResultFilter. It runs before and after execution of any action result. There are 2 events available:
+<ul>
+<li>OnResultExecuting - Runs before content is rendered to View.</li>
+<li>OnResultExecuted - Runs after content is rendered to view.</li>
+</ul>
+</li>
+<li>Exception filters: This filter is used to capture any exceptions if raised by controller or an action method. These implement IExceptionFilter.</li>
+</ul>
+<h4 id="existing-filter">Existing filter</h4>
+<p>Some filters are provided by Asp.Net implemented as attributes. The filters can be applied at the action method, controller, or application level.</p>
+<ul>
+<li>AuthorizeAttribute: Restricts access by authentication and optionally authorization. (customErrors element need to enabled in the Web.config file to work)</li>
+<li>HandleErrorAttribute: Specifies how to handle an exception that is thrown by an action method.</li>
+<li>OutputCacheAttribute: Provides output caching.</li>
+<li>RequireHttpsAttribute: Forces unsecured HTTP requests to be resent over HTTPS.</li>
+</ul>
+<h4 id="filter-creation">Filter creation</h4>
+<h5 id="override-on-methods">Override On<Filter> methods</h5>
+<p>You can override one or more of controller's On<Filter> methods.</p>
+<pre><code class="language-C#">protected override void OnActionExecuting(ActionExecutingContext filterContext)
+{
+    base.OnActionExecuting(filterContext);
+    TempData[&quot;time&quot;] = Stopwatch.StartNew();
+}
+
+protected override void OnActionExecuted(ActionExecutedContext filterContext)
+{
+    base.OnActionExecuted(filterContext);
+
+    var stopWatch = TempData[&quot;time&quot;] as Stopwatch;
+    if (stopWatch != null)
+    {
+        stopWatch.Stop();
+
+        var result = filterContext.Result as ViewResult;
+        if (result != null)
+        {
+            ((FilterModel)result.Model).ExecutionTime = stopWatch.Elapsed.TotalMilliseconds;
+        }
+    }
+}
+</code></pre>
+<h5 id="derive-from-actionfilterattribute">Derive from ActionFilterAttribute</h5>
+<p>To create a new ActionFilterAttribute, you need to:</p>
+<ul>
+<li>Create a class that derives from ActionFilterAttribute</li>
+</ul>
+<pre><code class="language-C#">public class ExecutionActionFilterAtttribute: ActionFilterAttribute, IActionFilter
+{
+    private readonly Stopwatch stopWatch;
+
+    public ExecutionActionFilterAtttribute()
+    {
+        stopWatch = new Stopwatch();
+    }
+
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        stopWatch.Reset();
+        stopWatch.Start();
+    }
+
+    public override void OnActionExecuted(ActionExecutedContext filterContext)
+    {
+        stopWatch.Stop();
+
+        var result = filterContext.Result as ViewResult;
+        if (result != null)
+        {
+            ((FilterModel)result.Model).ExecutionTime = stopWatch.Elapsed.TotalMilliseconds;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>Apply this attribute over the controller's method you want.</li>
+</ul>
+<pre><code class="language-C#">[ExecutionActionFilterAtttribute()]
+[Route(&quot;FilterByCustomActionFilterAttribute&quot;, Name = &quot;FilterByCustomActionFilterAttribute&quot;)]
+public ActionResult FilterByCustomActionFilterAttribute()
+{
+    return View(&quot;Index&quot;, new FilterModel());
+}
+</code></pre>
+<h5 id="filterproviders">FilterProviders</h5>
+<p>You can register several provider in the FilterProviders.</p>
+<p>By default, ASP.NET MVC registers the following filter providers:</p>
+<ul>
+<li>GlobalFilters.Filters for global filters.</li>
+<li>FilterAttributeFilterProvider for filter attributes.</li>
+<li>ControllerInstanceFilterProvider for controller instances.</li>
+</ul>
+<p>To create a custom filter provider, you need to:</p>
+<ul>
+<li>Create a class that derives from IFilterProvider</li>
+</ul>
+<pre><code class="language-C#">public class CustomFilterProvider: IFilterProvider
+{
+    public IEnumerable&lt;System.Web.Mvc.Filter&gt; GetFilters(
+        ControllerContext controllerContext, 
+        ActionDescriptor actionDescriptor)
+    {
+        if (actionDescriptor.ControllerDescriptor.ControllerName == &quot;TestFilter&quot;)
+        {
+            if (actionDescriptor.ActionName == &quot;FilterByCustomFilterProvider&quot;)
+            {
+                yield return new System.Web.Mvc.Filter(new ExecutionActionFilterAtttribute(), FilterScope.Action, 0);
+            }
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>Register this new provider in the provider collection</li>
+</ul>
+<pre><code class="language-C#">FilterProviders.Providers.Add(new CustomFilterProvider());
+</code></pre>
+<h5 id="globalfiltercollection">GlobalFilterCollection</h5>
+<p>To use GlobalFilters, you need to:</p>
+<ul>
+<li>Create a class that derives from IActionFilter, IAuthorizedAttribute, IExceptionAttribute or IResultAttribute</li>
+</ul>
+<pre><code class="language-C#">public class CustomGlobalFilter: IActionFilter
+{
+    private readonly Stopwatch stopWatch;
+
+    public CustomGlobalFilter()
+    {
+        stopWatch = new Stopwatch();
+    }
+
+    public void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        stopWatch.Reset();
+        stopWatch.Start();
+    }
+
+    public void OnActionExecuted(ActionExecutedContext filterContext)
+    {
+        stopWatch.Stop();
+
+        if (filterContext.ActionDescriptor.ControllerDescriptor.ControllerName == &quot;TestFilter&quot;)
+        {
+            if (filterContext.ActionDescriptor.ActionName == &quot;FilterByGlobalFilter&quot;)
+            {
+                var result = filterContext.Result as ViewResult;
+                if (result != null)
+                {
+                    ((FilterModel)result.Model).ExecutionTime = stopWatch.Elapsed.TotalMilliseconds;
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>Register this new provider in the global filter collection</li>
+</ul>
+<pre><code class="language-C#">GlobalFilters.Filters.Add(new CustomGlobalFilter());
+</code></pre>
+<h4 id="filter-order">Filter order</h4>
+<p>Filters run in the following order:</p>
+<ul>
+<li>Authentication filters</li>
+<li>Authorization filters</li>
+<li>Action filters</li>
+<li>Result filters</li>
+<li>Exception filters</li>
+</ul>
+<h4 id="filter-scope">Filter scope</h4>
+<p>Within each filter type, the Order value specifies the run order. Within each filter type and order, the Scope enumeration value specifies the order for filters. This enumeration defines the following filter scope values (in the order in which they run):</p>
+<ul>
+<li>First: specifies first.</li>
+<li>Global: specifies an order before Controller and after First.</li>
+<li>Controller: specifies an order before Action and after Global.</li>
+<li>Action: specifies an order before Last and after Controller.</li>
+<li>Last: specifies last.</li>
+</ul>
+<h4 id="filter-cancellation">Filter cancellation</h4>
 <h2 id="result-execution">Result Execution</h2>
 <h1 id="http-module">Http Module</h1>
 <p>It is an assembly that is called on every request that is made to your application.</p>
