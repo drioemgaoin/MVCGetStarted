@@ -1,7 +1,9 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Frontend.Binders;
 using Frontend.Factory;
+using Frontend.Models;
 
 namespace Frontend
 {
@@ -16,6 +18,7 @@ namespace Frontend
 
             ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
             ValueProviderFactories.Factories.Add(new CustomValueProviderFactory());
+            ModelBinders.Binders.Add(typeof(DateModel), new CustomModelBinder());
         }
     }
 }

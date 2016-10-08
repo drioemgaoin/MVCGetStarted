@@ -274,6 +274,37 @@ When MVC receives an HTTP request, it routes it to a specific action method of a
 
 MVC will try to bind request data to the action parameters by name. MVC will look for values for each parameter using the parameter name and the names of its public settable properties. 
 
+MVC uses DefaultModelBinder as a default model binder. It binds the following objects:
+- Types primitifs, such as objets String, Double, Decimal et DateTime.
+- Classes de modèle, such as Person, Address et Product.
+- Collections, such as ICollection<T>, IList<T> et IDictionary<TKey, TValue>
+
+To create a custom model binder, you need to:
+- Create a class that derives from IModelBinder (or DefaultModelBinder)
+```C#
+public class CustomModelBinder : IModelBinder
+{
+    public object BindModel(ControllerContext controllerContext,
+                            ModelBindingContext bindingContext)
+    {
+        var request = controllerContext.HttpContext.Request;
+
+        var day = request.Form.Get("Day");
+        var month = request.Form.Get("Month");
+        var year = request.Form.Get("Year");
+
+        return new DateModel
+        {
+            Date = day + "/" + month + "/" + year
+        };
+    }
+}
+```
+- Register it in the ModelBinders in the Global.asax file
+```C#
+ModelBinders.Binders.Add(typeof(DateModel), new CustomModelBinder());
+```
+
 Model binding looks through default value providers, in the order, which are the components that feed data to model binders:
 - Form values: These are form values that go in the HTTP request using the POST method. (including jQuery POST requests).
 - Route values: The set of route values provided by routing.
@@ -312,6 +343,25 @@ public class CustomValueProviderFactory: ValueProviderFactory
 ```C#
 ValueProviderFactories.Factories.Add(new CustomValueProviderFactory());
 ```
+
+In order for binding to happen, the class must have a public default constructor and member to be bound must be public writable properties. When model binding happens the class will only be instantiated using the public default constructor, then the properties can be set.
+
+When a parameter is bound, model binding stops looking for values with that name and it moves on to bind the next parameter. If binding fails, MVC does not throw an error. You can query for model state errors by checking the ModelState.IsValid property.
+
+MVC contains several attributes that you can use to direct its default model binding behavior to a different source.
+- BindRequired: add a model state error if binding cannot occur.
+- BindNever: tells to the model binder to never bind this paramater.
+- FromHeader: tells to Model binder to search the binding value from the request's header.
+- FromQuery: tells to Model binder to search the binding value from the query string. 
+- FromRoute: tells to Model binder to search the binding value from the route.
+- FromForm: tells to Model binder to search the binding value from the from.
+- FromServices: tells to Model binder to use DI (Dependency Injection) to bind the parameters from the Services.
+- FromBody: tells to Model binder to search the binding value from request body. It uses configured formatter to bind the value from the body and formatter is defined in the content type of the request.
+- ModelBinder: tells to Model binding to use custom model binder to bind the parameters. 
+
+Request data can come in a variety of formats including JSON, XML and many others. When you use the [FromBody] attribute to indicate that you want to bind a parameter to data in the request body, MVC uses a configured set of formatters to handle the request data based on its content type. By default MVC includes a JsonInputFormatter class for handling JSON data, but you can add additional formatters for handling XML and other custom formats.
+
+ASP.NET selects input formatters based on the Content-Type header and the type of the parameter.
 
 ### Filters
 

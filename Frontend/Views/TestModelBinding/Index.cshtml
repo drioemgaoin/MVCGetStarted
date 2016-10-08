@@ -1,0 +1,28 @@
+﻿@model Frontend.Models.DateModel
+
+@using (Html.BeginForm("TestModelBinding", "TestModelBinding", FormMethod.Post))
+{
+    <div style="margin: 50px">
+        <p>Input the following fields with number and click on Submit. You will see the date displayed as 'dd/mm/yyyy' (e.g 08/10/2016)</p>
+        <table>
+            <tr>
+                <td style="padding-right: 10px">Day</td>
+                <td>@Html.TextBox("Day")</td>
+            </tr>
+            <tr>
+                <td style="padding-right: 10px">Month</td>
+                <td>@Html.TextBox("Month")</td>
+            </tr>
+            <tr>
+                <td style="padding-right: 10px">Year</td>
+                <td>@Html.TextBox("Year")</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 10px; text-align: center">
+                    <input style="align-self: center" type="submit" value="Submit" />
+                </td>
+            </tr>
+        </table>
+        <div style="padding-top: 30px">@Model.Date</div>
+    </div>
+}

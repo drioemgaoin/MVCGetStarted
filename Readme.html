@@ -243,6 +243,39 @@ public ActionResult CustomRouteConstraint(string user)
 <p>It is the process that maps data from request to the method parameters.</p>
 <p>When MVC receives an HTTP request, it routes it to a specific action method of a controller. It determines which action method to run based on what is in the route data, then it binds values from the HTTP request to that action method’s parameters.</p>
 <p>MVC will try to bind request data to the action parameters by name. MVC will look for values for each parameter using the parameter name and the names of its public settable properties.</p>
+<p>MVC uses DefaultModelBinder as a default model binder. It binds the following objects:</p>
+<ul>
+<li>Types primitifs, such as objets String, Double, Decimal et DateTime.</li>
+<li>Classes de modèle, such as Person, Address et Product.</li>
+<li>Collections, such as ICollection<T>, IList<T> et IDictionary&lt;TKey, TValue&gt;</li>
+</ul>
+<p>To create a custom model binder, you need to:</p>
+<ul>
+<li>Create a class that derives from IModelBinder (or DefaultModelBinder)</li>
+</ul>
+<pre><code class="language-C#">public class CustomModelBinder : IModelBinder
+{
+    public object BindModel(ControllerContext controllerContext,
+                            ModelBindingContext bindingContext)
+    {
+        var request = controllerContext.HttpContext.Request;
+
+        var day = request.Form.Get(&quot;Day&quot;);
+        var month = request.Form.Get(&quot;Month&quot;);
+        var year = request.Form.Get(&quot;Year&quot;);
+
+        return new DateModel
+        {
+            Date = day + &quot;/&quot; + month + &quot;/&quot; + year
+        };
+    }
+}
+</code></pre>
+<ul>
+<li>Register it in the ModelBinders in the Global.asax file</li>
+</ul>
+<pre><code class="language-C#">ModelBinders.Binders.Add(typeof(DateModel), new CustomModelBinder());
+</code></pre>
 <p>Model binding looks through default value providers, in the order, which are the components that feed data to model binders:</p>
 <ul>
 <li>Form values: These are form values that go in the HTTP request using the POST method. (including jQuery POST requests).</li>
@@ -285,6 +318,22 @@ public ActionResult CustomRouteConstraint(string user)
 </ul>
 <pre><code class="language-C#">ValueProviderFactories.Factories.Add(new CustomValueProviderFactory());
 </code></pre>
+<p>In order for binding to happen, the class must have a public default constructor and member to be bound must be public writable properties. When model binding happens the class will only be instantiated using the public default constructor, then the properties can be set.</p>
+<p>When a parameter is bound, model binding stops looking for values with that name and it moves on to bind the next parameter. If binding fails, MVC does not throw an error. You can query for model state errors by checking the ModelState.IsValid property.</p>
+<p>MVC contains several attributes that you can use to direct its default model binding behavior to a different source.</p>
+<ul>
+<li>BindRequired: add a model state error if binding cannot occur.</li>
+<li>BindNever: tells to the model binder to never bind this paramater.</li>
+<li>FromHeader: tells to Model binder to search the binding value from the request's header.</li>
+<li>FromQuery: tells to Model binder to search the binding value from the query string.</li>
+<li>FromRoute: tells to Model binder to search the binding value from the route.</li>
+<li>FromForm: tells to Model binder to search the binding value from the from.</li>
+<li>FromServices: tells to Model binder to use DI (Dependency Injection) to bind the parameters from the Services.</li>
+<li>FromBody: tells to Model binder to search the binding value from request body. It uses configured formatter to bind the value from the body and formatter is defined in the content type of the request.</li>
+<li>ModelBinder: tells to Model binding to use custom model binder to bind the parameters.</li>
+</ul>
+<p>Request data can come in a variety of formats including JSON, XML and many others. When you use the [FromBody] attribute to indicate that you want to bind a parameter to data in the request body, MVC uses a configured set of formatters to handle the request data based on its content type. By default MVC includes a JsonInputFormatter class for handling JSON data, but you can add additional formatters for handling XML and other custom formats.</p>
+<p>ASP.NET selects input formatters based on the Content-Type header and the type of the parameter.</p>
 <h3 id="filters">Filters</h3>
 <h2 id="result-execution">Result Execution</h2>
 <h1 id="http-module">Http Module</h1>

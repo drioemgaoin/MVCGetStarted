@@ -166,7 +166,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Binders\CustomModelBinder.cs" />
     <Compile Include="Constraint\CustomRouteConstraint.cs" />
+    <Compile Include="Controllers\TestModelBindingController.cs" />
     <Compile Include="Controllers\TestRouteConstraintController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestActionInvokerController.cs" />
@@ -178,6 +180,7 @@
     </Compile>
     <Compile Include="Handler\CustomHttpHandler.cs" />
     <Compile Include="Handler\CustomRouteHandler.cs" />
+    <Compile Include="Models\DateModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Module\LogHttpModule.cs" />
     <Compile Include="Module\LogHttpModuleRegistration.cs" />
@@ -222,6 +225,7 @@
     <Content Include="Views\TestRouteConstraint\Index.cshtml" />
     <Content Include="Views\TestValueProvider\Index.cshtml" />
     <Content Include="Views\TestRouteConstraint\Result.cshtml" />
+    <Content Include="Views\TestModelBinding\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
