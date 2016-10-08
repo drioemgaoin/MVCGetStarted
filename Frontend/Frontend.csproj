@@ -166,8 +166,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Constraint\UserRouteConstraint.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Constraint\CustomRouteConstraint.cs" />
+    <Compile Include="Controllers\TestRouteConstraintController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestActionInvokerController.cs" />
     <Compile Include="Controllers\TestValueProviderController.cs" />
@@ -178,7 +178,7 @@
     </Compile>
     <Compile Include="Handler\GithubHttpHandler.cs" />
     <Compile Include="Handler\GithubRouteHandler.cs" />
-    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Module\LogHttpModule.cs" />
     <Compile Include="Module\LogHttpModuleRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -219,8 +219,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\TestRouteConstraint\Index.cshtml" />
     <Content Include="Views\TestValueProvider\Index.cshtml" />
+    <Content Include="Views\TestRouteConstraint\Result.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

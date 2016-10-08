@@ -49,28 +49,39 @@ public class HomeController : Controller
 </code></pre>
 <p>You can define constraints to a route by using:</p>
 <ul>
-<li>Regular expressions</li>
-</ul>
+<li><p>Regular expressions</p>
+<ul>
+<li>Using MapRoute
 <pre><code class="language-C#">routes.MapRoute(
-    name: &quot;Default&quot;,
-    url: &quot;{controller}/{action}/{id}&quot;,
-    defaults: new { controller = &quot;Home&quot;, action = &quot;Index&quot;, id = UrlParameter.Optional },
-    constraints: new { id = @&quot;\d+&quot; } // 'id' identifies the parameter that the constraint applies to
+    name: &quot;RegExpRouteConstraint&quot;,
+    url: &quot;TestRouteConstraint/Regexp/{user}&quot;,
+    defaults: new { controller = &quot;TestRouteConstraint&quot;, action = &quot;RegularExpressionConstraint&quot;, user = UrlParameter.Optional },
+    constraints: new { user = &quot;rdiegoni&quot; } // 'user' identifies the parameter that the constraint applies to
 );
 
-// localhost/Home/Index/2 resource found
-// localhost/Home/Index/xxx resource not found
+// localhost/TestRouteConstraint/Custom/rdiegoni resource found
+// localhost/TestRouteConstraint/Custom/xxx resource not found
 </code></pre>
-<ul>
-<li>Objects that implement the IRouteConstraint interface</li>
+</li>
+<li>Using RouteAttribute
+<pre><code class="language-C#">[Route(&quot;TestRouteConstraint/Regexp/{user:regex(rdiegoni)}&quot;, Name = &quot;TestRouteConstraint_RegularExpressionConstraint&quot;)]
+public ActionResult RegularExpressionConstraint(string user)
+{
+    ViewBag.Message = &quot;Regular Expression Constraint sucess&quot;;
+    return View(&quot;Result&quot;);
+}
+</code></pre>
+</li>
 </ul>
-<pre><code class="language-C#">public class UserRouteConstraint: IRouteConstraint
+</li>
+<li><p>Objects that implement the IRouteConstraint interface</p>
+<pre><code class="language-C#">public class CustomRouteConstraint: IRouteConstraint
 {
     private readonly List&lt;string&gt; users;
 
-    public UserRouteConstraint(params string[] users)
+    public CustomRouteConstraint(string users)
     {
-        this.users = users.Select(x =&gt; x.ToLower()).ToList();
+        this.users = users.Split('|').Select(x =&gt; x.ToLower()).ToList();
     }
 
     public bool Match(
@@ -84,14 +95,33 @@ public class HomeController : Controller
         return users.Contains(value.ToLower());
     }
 }
-
-routes.MapRoute(
-    name: &quot;Admin&quot;,
-    url: &quot;Account/Index/{user}&quot;,
-    defaults: new { controller = &quot;Account&quot;, action = &quot;Index&quot;, user = UrlParameter.Optional },
-    constraints: new { user = new UserRouteConstraint(&quot;rdiegoni&quot;) } // 'user' identifies the parameter that the constraint applies to
+</code></pre>
+<p>Then, register it in Global.asax file</p>
+<pre><code class="language-C#">var constraintsResolver = new DefaultInlineConstraintResolver();
+constraintsResolver.ConstraintMap.Add(&quot;match&quot;, typeof(CustomRouteConstraint));
+</code></pre>
+<ul>
+<li>Using the constraints parameter in MapRoute
+<pre><code class="language-C#">routes.MapRoute(
+    name: &quot;CustomRouteConstraint&quot;,
+    url: &quot;TestRouteConstraint/Custom/{user}&quot;,
+    defaults: new { controller = &quot;TestRouteConstraint&quot;, action = &quot;CustomRouteConstraint&quot;, user = UrlParameter.Optional },
+    constraints: new { user = new CustomRouteConstraint(&quot;rdiegoni&quot;) } // 'user' identifies the parameter that the constraint applies to
 );
 </code></pre>
+</li>
+<li>Using the constraints parameter in RouteAttribute
+<pre><code class="language-C#">[Route(&quot;TestRouteConstraint/Custom/{user:match(rdiegoni)}&quot;, Name = &quot;TestRouteConstraint_CustomRouteConstraint&quot;)]
+public ActionResult CustomRouteConstraint(string user)
+{
+    ViewBag.Message = &quot;Custom Route Constraint sucess&quot;;
+    return View(&quot;Result&quot;);
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="route-handler">Route Handler</h3>
 <p>It is a class returning the http handler that will handle the incoming request.</p>
 <p>To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method.</p>
@@ -205,7 +235,7 @@ routes.MapRoute(
 }
 </code></pre>
 <ul>
-<li>Replace the action invoker for each concerned controller</li>
+<li>Replace, in the controller factory, the action invoker for each concerned controller</li>
 </ul>
 <pre><code class="language-C#">mvcController.ActionInvoker = new MyControllerActionInvoker();
 </code></pre>

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Routing;
 
 namespace Frontend.Constraint
 {
-    public class UserRouteConstraint: IRouteConstraint
+    public class CustomRouteConstraint: IRouteConstraint
     {
         private readonly List<string> users;
 
-        public UserRouteConstraint(params string[] users)
+        public CustomRouteConstraint(string users)
         {
-            this.users = users.Select(x => x.ToLower()).ToList();
+            this.users = users.Split('|').Select(x => x.ToLower()).ToList();
         }
 
         public bool Match(

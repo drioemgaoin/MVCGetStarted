@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using System.Web.Mvc.Routing;
 using System.Web.Routing;
 using Frontend.Constraint;
 using Frontend.Handler;
@@ -12,10 +13,14 @@ namespace Frontend
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             // Create Http Handler
-            routes.Add(new Route("mygithub", new GithubRouteHandler()));
+            //routes.Add(new Route("mygithub", new GithubRouteHandler()));
+
+            // Create Constraints Routes
+            var constraintsResolver = new DefaultInlineConstraintResolver();
+            constraintsResolver.ConstraintMap.Add("match", typeof(CustomRouteConstraint));
 
             // Create Routes
-            routes.MapMvcAttributeRoutes();
+            routes.MapMvcAttributeRoutes(constraintsResolver);
         }
 
         private static void CreateRoute(RouteCollection routes)
@@ -32,10 +37,17 @@ namespace Frontend
         private static void MapRouteWithRegexConstraint(RouteCollection routes)
         {
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-                constraints: new { id = @"\d+"  }
+                name: "RegExpRouteConstraint",
+                url: "TestRouteConstraint/Regexp/{user}",
+                defaults: new { controller = "TestRouteConstraint", action = "RegularExpressionConstraint", user = UrlParameter.Optional },
+                constraints: new { user = "rdiegoni" } // 'user' identifies the parameter that the constraint applies to
+            );
+
+            routes.MapRoute(
+                name: "CustomRouteConstraint",
+                url: "TestRouteConstraint/Custom/{user}",
+                defaults: new { controller = "TestRouteConstraint", action = "CustomRouteConstraint", user = UrlParameter.Optional },
+                constraints: new { user = new CustomRouteConstraint("rdiegoni") } // 'user' identifies the parameter that the constraint applies to
             );
         }
 
@@ -43,9 +55,9 @@ namespace Frontend
         {
             routes.MapRoute(
                 name: "Admin",
-                url: "Account/Index/{user}",
-                defaults: new { controller = "Account", action = "Index", user = UrlParameter.Optional },
-                constraints: new { user = new UserRouteConstraint("rdiegoni") }
+                url: "TestRouteConstraint/Match/{user}",
+                defaults: new { controller = "TestRouteConstraint", action = "Match", user = UrlParameter.Optional },
+                constraints: new { user = new CustomRouteConstraint("rdiegoni") }
             );
         }
 

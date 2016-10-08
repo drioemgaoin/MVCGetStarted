@@ -2,11 +2,19 @@
 
 @using (Html.BeginForm("Index", "TestValueProvider", FormMethod.Post))
 {
-    <div>
-        <div>
-            <label>Name</label>
-            @Html.TextBoxFor(x => x.Name)
-        </div>
-        <input type="submit" value="Submit" />
-    </div>            
+    <table style="margin: 50px">
+        <tr>
+            <td style="padding-right: 10px">Id</td>
+            <td>@Html.ValueFor(x => x.Id)</td>
+        </tr>
+        <tr>
+            <td style="padding-right: 10px">Name</td>
+            <td>@Html.TextBoxFor(x => x.Name)</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding-top: 10px; text-align: center">
+                <input style="align-self: center" type="submit" value="Submit"/>
+            </td>
+        </tr>
+    </table>
 }

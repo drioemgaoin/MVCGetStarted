@@ -55,47 +55,74 @@ public class HomeController : Controller
 
 You can define constraints to a route by using:
 - Regular expressions
-```C#
-routes.MapRoute(
-    name: "Default",
-    url: "{controller}/{action}/{id}",
-    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-    constraints: new { id = @"\d+" } // 'id' identifies the parameter that the constraint applies to
-);
+  - Using MapRoute
+    ```C#
+    routes.MapRoute(
+        name: "RegExpRouteConstraint",
+        url: "TestRouteConstraint/Regexp/{user}",
+        defaults: new { controller = "TestRouteConstraint", action = "RegularExpressionConstraint", user = UrlParameter.Optional },
+        constraints: new { user = "rdiegoni" } // 'user' identifies the parameter that the constraint applies to
+    );
 
-// localhost/Home/Index/2 resource found
-// localhost/Home/Index/xxx resource not found
-```
+    // localhost/TestRouteConstraint/Custom/rdiegoni resource found
+    // localhost/TestRouteConstraint/Custom/xxx resource not found
+    ```
+  - Using RouteAttribute
+    ```C#
+    [Route("TestRouteConstraint/Regexp/{user:regex(rdiegoni)}", Name = "TestRouteConstraint_RegularExpressionConstraint")]
+    public ActionResult RegularExpressionConstraint(string user)
+    {
+        ViewBag.Message = "Regular Expression Constraint sucess";
+        return View("Result");
+    }
+    ```
 - Objects that implement the IRouteConstraint interface 
-```C#
-public class UserRouteConstraint: IRouteConstraint
-{
-    private readonly List<string> users;
-
-    public UserRouteConstraint(params string[] users)
+    ```C#
+    public class CustomRouteConstraint: IRouteConstraint
     {
-        this.users = users.Select(x => x.ToLower()).ToList();
-    }
+        private readonly List<string> users;
 
-    public bool Match(
-        HttpContextBase httpContext, 
-        Route route, 
-        string parameterName, 
-        RouteValueDictionary values,
-        RouteDirection routeDirection)
+        public CustomRouteConstraint(string users)
+        {
+            this.users = users.Split('|').Select(x => x.ToLower()).ToList();
+        }
+
+        public bool Match(
+            HttpContextBase httpContext, 
+            Route route, 
+            string parameterName, 
+            RouteValueDictionary values,
+            RouteDirection routeDirection)
+        {
+            var value = values[parameterName].ToString();
+            return users.Contains(value.ToLower());
+        }
+    }
+    ```
+    Then, register it in Global.asax file
+    ```C#
+    var constraintsResolver = new DefaultInlineConstraintResolver();
+    constraintsResolver.ConstraintMap.Add("match", typeof(CustomRouteConstraint));
+    ```
+
+  - Using the constraints parameter in MapRoute
+    ```C#
+    routes.MapRoute(
+        name: "CustomRouteConstraint",
+        url: "TestRouteConstraint/Custom/{user}",
+        defaults: new { controller = "TestRouteConstraint", action = "CustomRouteConstraint", user = UrlParameter.Optional },
+        constraints: new { user = new CustomRouteConstraint("rdiegoni") } // 'user' identifies the parameter that the constraint applies to
+    );
+    ```
+  - Using the constraints parameter in RouteAttribute
+    ```C#
+    [Route("TestRouteConstraint/Custom/{user:match(rdiegoni)}", Name = "TestRouteConstraint_CustomRouteConstraint")]
+    public ActionResult CustomRouteConstraint(string user)
     {
-        var value = values[parameterName].ToString();
-        return users.Contains(value.ToLower());
+        ViewBag.Message = "Custom Route Constraint sucess";
+        return View("Result");
     }
-}
-
-routes.MapRoute(
-    name: "Admin",
-    url: "Account/Index/{user}",
-    defaults: new { controller = "Account", action = "Index", user = UrlParameter.Optional },
-    constraints: new { user = new UserRouteConstraint("rdiegoni") } // 'user' identifies the parameter that the constraint applies to
-);
-```
+    ```
 
 ### Route Handler
 It is a class returning the http handler that will handle the incoming request.
@@ -231,7 +258,7 @@ public class MyControllerActionInvoker: IActionInvoker
     }
 }
 ```
-- Replace the action invoker for each concerned controller
+- Replace, in the controller factory, the action invoker for each concerned controller 
 ```C#
 mvcController.ActionInvoker = new MyControllerActionInvoker();
 ```

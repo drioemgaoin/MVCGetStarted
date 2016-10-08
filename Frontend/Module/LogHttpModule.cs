@@ -33,7 +33,7 @@ namespace Frontend.Module
                 if (!disposed)
                 {
                     context.BeginRequest -= OnBeginRequest;
-                    disposed = false;
+                    disposed = true;
                 }
             }
         }
