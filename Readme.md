@@ -108,7 +108,7 @@ You can define constraints to a route by using:
     constraintsResolver.ConstraintMap.Add("match", typeof(CustomRouteConstraint));
     ```
 
-  - Using the constraints parameter in MapRoute
+  - Using MapRoute
     ```C#
     routes.MapRoute(
         name: "CustomRouteConstraint",
@@ -118,7 +118,7 @@ You can define constraints to a route by using:
     );
     ```
 
-  - Using the constraints parameter in RouteAttribute
+  - Using RouteAttribute
     ```C#
     [Route("TestRouteConstraint/Custom/{user:match(rdiegoni)}", Name = "TestRouteConstraint_CustomRouteConstraint")]
     public ActionResult CustomRouteConstraint(string user)

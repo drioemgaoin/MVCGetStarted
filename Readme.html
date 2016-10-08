@@ -101,7 +101,7 @@ public ActionResult RegularExpressionConstraint(string user)
 constraintsResolver.ConstraintMap.Add(&quot;match&quot;, typeof(CustomRouteConstraint));
 </code></pre>
 <ul>
-<li><p>Using the constraints parameter in MapRoute</p>
+<li><p>Using MapRoute</p>
 <pre><code class="language-C#">routes.MapRoute(
     name: &quot;CustomRouteConstraint&quot;,
     url: &quot;TestRouteConstraint/Custom/{user}&quot;,
@@ -110,7 +110,7 @@ constraintsResolver.ConstraintMap.Add(&quot;match&quot;, typeof(CustomRouteConst
 );
 </code></pre>
 </li>
-<li><p>Using the constraints parameter in RouteAttribute</p>
+<li><p>Using RouteAttribute</p>
 <pre><code class="language-C#">[Route(&quot;TestRouteConstraint/Custom/{user:match(rdiegoni)}&quot;, Name = &quot;TestRouteConstraint_CustomRouteConstraint&quot;)]
 public ActionResult CustomRouteConstraint(string user)
 {
