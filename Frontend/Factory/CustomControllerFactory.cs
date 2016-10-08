@@ -55,7 +55,7 @@ namespace Frontend.Factory
             var mvcController = controller as Controller;
             if (mvcController != null)
             {
-                mvcController.ActionInvoker = new MyControllerActionInvoker();
+                mvcController.ActionInvoker = new CustomControllerActionInvoker();
             }
 
             return mvcController;

@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 namespace Frontend.Action
 {
-    public class MyControllerActionInvoker: IActionInvoker
+    public class CustomControllerActionInvoker: IActionInvoker
     {
         public bool InvokeAction(ControllerContext controllerContext, string actionName)
         {

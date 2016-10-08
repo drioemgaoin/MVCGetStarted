@@ -15,7 +15,7 @@ namespace Frontend.ValueProvider
         {
             return new ValueProviderResult(
                 HttpContext.Current.Request.Cookies[key].Value,
-                HttpContext.Current.Request.Cookies[key].Value.ToString(),
+                HttpContext.Current.Request.Cookies[key].Value,
                 CultureInfo.CurrentCulture);
         }
     }

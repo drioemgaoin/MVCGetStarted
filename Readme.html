@@ -166,7 +166,7 @@ public ActionResult CustomRouteConstraint(string user)
 <ul>
 <li>Create a class that derives from IControllerFactory (or DefaultControllerFactory).</li>
 </ul>
-<pre><code class="language-C#">public class MyControllerFactory : IControllerFactory
+<pre><code class="language-C#">public class CustomControllerFactory : IControllerFactory
 {
     // You can use your favourite IoC tool to inject the dependencies needed by each controller
     // Activator.CreateInstance(controller, dependencies)
@@ -207,7 +207,7 @@ public ActionResult CustomRouteConstraint(string user)
 <ul>
 <li>Set this factory as a new controller factory in Global.asax file.</li>
 </ul>
-<pre><code class="language-C#">ControllerBuilder.Current.SetControllerFactory(typeof(MyControllerFactory));
+<pre><code class="language-C#">ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
 </code></pre>
 <h2 id="action-execution">Action Execution</h2>
 <p><img src="./img/action-execution.jpg" alt="Route Selection" /></p>
@@ -221,7 +221,7 @@ public ActionResult CustomRouteConstraint(string user)
 <ul>
 <li>Create a class that derives from IActionInvoker (or ControllerActionInvoker)</li>
 </ul>
-<pre><code class="language-C#">public class MyControllerActionInvoker: IActionInvoker
+<pre><code class="language-C#">public class CustomControllerActionInvoker: IActionInvoker
 {
     public bool InvokeAction(ControllerContext controllerContext, string actionName)
     {
@@ -237,7 +237,7 @@ public ActionResult CustomRouteConstraint(string user)
 <ul>
 <li>Replace, in the controller factory, the action invoker for each concerned controller</li>
 </ul>
-<pre><code class="language-C#">mvcController.ActionInvoker = new MyControllerActionInvoker();
+<pre><code class="language-C#">mvcController.ActionInvoker = new CustomControllerActionInvoker();
 </code></pre>
 <h3 id="model-binding">Model Binding</h3>
 <p>It is the process that maps data from request to the method parameters.</p>
@@ -264,7 +264,7 @@ public ActionResult CustomRouteConstraint(string user)
     {
         return new ValueProviderResult(
             HttpContext.Current.Request.Cookies[key].Value,
-            HttpContext.Current.Request.Cookies[key].Value.ToString(),
+            HttpContext.Current.Request.Cookies[key].Value,
             CultureInfo.CurrentCulture);
     }
 }

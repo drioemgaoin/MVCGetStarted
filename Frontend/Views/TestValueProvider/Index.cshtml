@@ -1,12 +1,8 @@
-﻿@model Frontend.Models.UserModel
+﻿@model Frontend.Models.ResultModel
 
 @using (Html.BeginForm("Index", "TestValueProvider", FormMethod.Post))
 {
     <table style="margin: 50px">
-        <tr>
-            <td style="padding-right: 10px">Id</td>
-            <td>@Html.ValueFor(x => x.Id)</td>
-        </tr>
         <tr>
             <td style="padding-right: 10px">Name</td>
             <td>@Html.TextBoxFor(x => x.Name)</td>
@@ -17,4 +13,5 @@
             </td>
         </tr>
     </table>
+    <div style="padding-top: 30px">@Model.Message</div>
 }

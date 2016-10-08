@@ -189,7 +189,7 @@ MVC uses DefaultControllerFactory as a default controller factory.
 To create a custom controller factory, you need to:
 - Create a class that derives from IControllerFactory (or DefaultControllerFactory).
 ```C#
-public class MyControllerFactory : IControllerFactory
+public class CustomControllerFactory : IControllerFactory
 {
     // You can use your favourite IoC tool to inject the dependencies needed by each controller
     // Activator.CreateInstance(controller, dependencies)
@@ -229,7 +229,7 @@ public class MyControllerFactory : IControllerFactory
 ```
 - Set this factory as a new controller factory in Global.asax file.
 ```C#
-ControllerBuilder.Current.SetControllerFactory(typeof(MyControllerFactory));
+ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
 ```
 
 ## Action Execution
@@ -249,7 +249,7 @@ It has the responsibilities of finding the action method in the controller and t
 To create a custom action invoker, you need to:
 - Create a class that derives from IActionInvoker (or ControllerActionInvoker)
 ```C#
-public class MyControllerActionInvoker: IActionInvoker
+public class CustomControllerActionInvoker: IActionInvoker
 {
     public bool InvokeAction(ControllerContext controllerContext, string actionName)
     {
@@ -264,7 +264,7 @@ public class MyControllerActionInvoker: IActionInvoker
 ```
 - Replace, in the controller factory, the action invoker for each concerned controller 
 ```C#
-mvcController.ActionInvoker = new MyControllerActionInvoker();
+mvcController.ActionInvoker = new CustomControllerActionInvoker();
 ```
 
 ### Model Binding
@@ -293,7 +293,7 @@ public class CustomValueProvider: IValueProvider
     {
         return new ValueProviderResult(
             HttpContext.Current.Request.Cookies[key].Value,
-            HttpContext.Current.Request.Cookies[key].Value.ToString(),
+            HttpContext.Current.Request.Cookies[key].Value,
             CultureInfo.CurrentCulture);
     }
 }
