@@ -13,8 +13,13 @@
          1. [Filter filters](#filter-types)
          2. [Existing types](#existing-filters)
          3. [Filter creation](#filter-creation)
-            1. [Override On<Filter> methods](#override-on<filter>-methods)
+            1. [Override OnXXX methods](#override-onxxx-methods)
             2. [Derive from ActionFilterAttribute](#derive-from-actionfilterattribute) 
+            3. [FilterProviders](#filterproviders)  
+            4. [GlobalFilterCollection](#globalfiltercollection)
+         4. [Filter order](#filter-order)
+         5. [Filter scope](#filter-scope)
+         6. [Filter cancellation](#filter-cancellation)  
    4. [Result Execution](#result-execution)
 3. [Http module](#http-module)
 
@@ -406,7 +411,7 @@ Some filters are provided by Asp.Net implemented as attributes. The filters can 
 - RequireHttpsAttribute: Forces unsecured HTTP requests to be resent over HTTPS.
 
 #### Filter creation
-##### Override On<Filter> methods
+##### Override OnXXX methods
 You can override one or more of controller's On<Filter> methods.
 ```C#
 protected override void OnActionExecuting(ActionExecutingContext filterContext)

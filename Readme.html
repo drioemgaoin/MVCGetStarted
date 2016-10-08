@@ -21,10 +21,15 @@
 <li><a href="#existing-filters">Existing types</a></li>
 <li><a href="#filter-creation">Filter creation</a>
 <ol>
-<li><a href="#override-on%3Cfilter%3E-methods">Override On<Filter> methods</a></li>
+<li><a href="#override-onxxx-methods">Override OnXXX methods</a></li>
 <li><a href="#derive-from-actionfilterattribute">Derive from ActionFilterAttribute</a></li>
+<li><a href="#filterproviders">FilterProviders</a></li>
+<li><a href="#globalfiltercollection">GlobalFilterCollection</a></li>
 </ol>
 </li>
+<li><a href="#filter-order">Filter order</a></li>
+<li><a href="#filter-scope">Filter scope</a></li>
+<li><a href="#filter-cancellation">Filter cancellation</a></li>
 </ol>
 </li>
 </ol>
@@ -400,7 +405,7 @@ public ActionResult CustomRouteConstraint(string user)
 <li>RequireHttpsAttribute: Forces unsecured HTTP requests to be resent over HTTPS.</li>
 </ul>
 <h4 id="filter-creation">Filter creation</h4>
-<h5 id="override-on-methods">Override On<Filter> methods</h5>
+<h5 id="override-onxxx-methods">Override OnXXX methods</h5>
 <p>You can override one or more of controller's On<Filter> methods.</p>
 <pre><code class="language-C#">protected override void OnActionExecuting(ActionExecutingContext filterContext)
 {
