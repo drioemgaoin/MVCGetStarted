@@ -2,7 +2,7 @@
 
 namespace Frontend.Handler
 {
-    public class GithubHttpHandler: IHttpHandler
+    public class CustomHttpHandler: IHttpHandler
     {
         public void ProcessRequest(HttpContext context)
         {

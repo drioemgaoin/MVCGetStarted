@@ -176,8 +176,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Handler\GithubHttpHandler.cs" />
-    <Compile Include="Handler\GithubRouteHandler.cs" />
+    <Compile Include="Handler\CustomHttpHandler.cs" />
+    <Compile Include="Handler\CustomRouteHandler.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Module\LogHttpModule.cs" />
     <Compile Include="Module\LogHttpModuleRegistration.cs" />
@@ -226,6 +226,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\TestActionInvoker\" />
+    <Folder Include="Views\TestRouteHandler\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

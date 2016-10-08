@@ -133,18 +133,18 @@ It is a class returning the http handler that will handle the incoming request.
 
 To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method.
 ```C#
-public class MyRouteHandler : IRouteHandler
+public class CustomRouteHandler : IRouteHandler
 {
     public IHttpHandler GetHttpHandler(RequestContext requestContext)
     {
-        return new MyHttpHandler();
+        return new CustomHttpHandler();
     }
 }
 ```
 
 Then, you need to associate this handler to the routes you want to apply with.
 ```C#
-routes.Add(new Route("route", new MyRouteHandler()));
+routes.Add(new Route("route", new CustomRouteHandler()));
 ```
 
 MVC uses MVCRouteHandler as a default route handler.
@@ -155,7 +155,7 @@ It is a class that provides a response to the incoming request.
 
 To create a custom http handler, you need to create a class that derives from IHttpHandler.
 ```C#
-public class MyHttpHandler: IHttpHandler
+public class CustomHttpHandler: IHttpHandler
 {
     public void ProcessRequest(HttpContext context)
     {

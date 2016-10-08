@@ -125,22 +125,22 @@ public ActionResult CustomRouteConstraint(string user)
 <h3 id="route-handler">Route Handler</h3>
 <p>It is a class returning the http handler that will handle the incoming request.</p>
 <p>To create a new route handler, you need to create a class that derives from IRouteHandler and return an instance of the custom handler in the GetHttpHandler method.</p>
-<pre><code class="language-C#">public class MyRouteHandler : IRouteHandler
+<pre><code class="language-C#">public class CustomRouteHandler : IRouteHandler
 {
     public IHttpHandler GetHttpHandler(RequestContext requestContext)
     {
-        return new MyHttpHandler();
+        return new CustomHttpHandler();
     }
 }
 </code></pre>
 <p>Then, you need to associate this handler to the routes you want to apply with.</p>
-<pre><code class="language-C#">routes.Add(new Route(&quot;route&quot;, new MyRouteHandler()));
+<pre><code class="language-C#">routes.Add(new Route(&quot;route&quot;, new CustomRouteHandler()));
 </code></pre>
 <p>MVC uses MVCRouteHandler as a default route handler.</p>
 <h3 id="http-handler">Http Handler</h3>
 <p>It is a class that provides a response to the incoming request.</p>
 <p>To create a custom http handler, you need to create a class that derives from IHttpHandler.</p>
-<pre><code class="language-C#">public class MyHttpHandler: IHttpHandler
+<pre><code class="language-C#">public class CustomHttpHandler: IHttpHandler
 {
     public void ProcessRequest(HttpContext context)
     {

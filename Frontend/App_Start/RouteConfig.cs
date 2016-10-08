@@ -13,7 +13,7 @@ namespace Frontend
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             // Create Http Handler
-            //routes.Add(new Route("mygithub", new GithubRouteHandler()));
+            //routes.Add(new Route("TestRouteHandler/mygithub", new CustomRouteHandler()));
 
             // Create Constraints Routes
             var constraintsResolver = new DefaultInlineConstraintResolver();
