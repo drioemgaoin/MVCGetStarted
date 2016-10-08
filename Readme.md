@@ -1,4 +1,13 @@
-﻿# Application lifecycle
+﻿# Table of Contents
+1. [Application lifecycle](#application-lifecycle)
+2. [Request lifecycle](#request-lifecycle)
+    2.1. [Routing](#routing)
+    2.2. [Controller Initialization](#controller-initialization)
+    2.3. [Action Execution](#action-execution)
+    2.4. [Result Execution](#result-execution)
+2. [Http module](#http-module)
+
+# Application lifecycle
 MVC Application lifecycle contains two events:
 - Start event: fired when the application is brought to life by a very first request to the application. 
 - End event: fired when the application has been shut down.
