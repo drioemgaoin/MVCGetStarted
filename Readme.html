@@ -51,7 +51,7 @@ public class HomeController : Controller
 <ul>
 <li><p>Regular expressions</p>
 <ul>
-<li>Using MapRoute
+<li><p>Using MapRoute</p>
 <pre><code class="language-C#">routes.MapRoute(
     name: &quot;RegExpRouteConstraint&quot;,
     url: &quot;TestRouteConstraint/Regexp/{user}&quot;,
@@ -63,7 +63,7 @@ public class HomeController : Controller
 // localhost/TestRouteConstraint/Custom/xxx resource not found
 </code></pre>
 </li>
-<li>Using RouteAttribute
+<li><p>Using RouteAttribute</p>
 <pre><code class="language-C#">[Route(&quot;TestRouteConstraint/Regexp/{user:regex(rdiegoni)}&quot;, Name = &quot;TestRouteConstraint_RegularExpressionConstraint&quot;)]
 public ActionResult RegularExpressionConstraint(string user)
 {
@@ -101,7 +101,7 @@ public ActionResult RegularExpressionConstraint(string user)
 constraintsResolver.ConstraintMap.Add(&quot;match&quot;, typeof(CustomRouteConstraint));
 </code></pre>
 <ul>
-<li>Using the constraints parameter in MapRoute
+<li><p>Using the constraints parameter in MapRoute</p>
 <pre><code class="language-C#">routes.MapRoute(
     name: &quot;CustomRouteConstraint&quot;,
     url: &quot;TestRouteConstraint/Custom/{user}&quot;,
@@ -110,7 +110,7 @@ constraintsResolver.ConstraintMap.Add(&quot;match&quot;, typeof(CustomRouteConst
 );
 </code></pre>
 </li>
-<li>Using the constraints parameter in RouteAttribute
+<li><p>Using the constraints parameter in RouteAttribute</p>
 <pre><code class="language-C#">[Route(&quot;TestRouteConstraint/Custom/{user:match(rdiegoni)}&quot;, Name = &quot;TestRouteConstraint_CustomRouteConstraint&quot;)]
 public ActionResult CustomRouteConstraint(string user)
 {

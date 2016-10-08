@@ -67,6 +67,7 @@ You can define constraints to a route by using:
     // localhost/TestRouteConstraint/Custom/rdiegoni resource found
     // localhost/TestRouteConstraint/Custom/xxx resource not found
     ```
+
   - Using RouteAttribute
     ```C#
     [Route("TestRouteConstraint/Regexp/{user:regex(rdiegoni)}", Name = "TestRouteConstraint_RegularExpressionConstraint")]
@@ -76,6 +77,7 @@ You can define constraints to a route by using:
         return View("Result");
     }
     ```
+
 - Objects that implement the IRouteConstraint interface 
     ```C#
     public class CustomRouteConstraint: IRouteConstraint
@@ -99,6 +101,7 @@ You can define constraints to a route by using:
         }
     }
     ```
+
     Then, register it in Global.asax file
     ```C#
     var constraintsResolver = new DefaultInlineConstraintResolver();
@@ -114,6 +117,7 @@ You can define constraints to a route by using:
         constraints: new { user = new CustomRouteConstraint("rdiegoni") } // 'user' identifies the parameter that the constraint applies to
     );
     ```
+
   - Using the constraints parameter in RouteAttribute
     ```C#
     [Route("TestRouteConstraint/Custom/{user:match(rdiegoni)}", Name = "TestRouteConstraint_CustomRouteConstraint")]
