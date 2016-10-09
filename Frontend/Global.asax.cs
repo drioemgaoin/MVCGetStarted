@@ -22,6 +22,9 @@ namespace Frontend
             ModelBinders.Binders.Add(typeof(DateModel), new CustomModelBinder());
             FilterProviders.Providers.Add(new CustomFilterProvider());
             GlobalFilters.Filters.Add(new CustomGlobalFilter());
+
+            HtmlHelper.ClientValidationEnabled = true;
+            HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
         }
     }
 }

@@ -1,0 +1,41 @@
+﻿@model Frontend.Models.ValidationModel
+
+@using (Html.BeginForm("Validate", "TestValidation", FormMethod.Post))
+{
+    <div style="margin: 50px">
+        <table>
+            <tr>
+                <td>@Html.LabelFor(x => x.Name)</td>
+                <td>@Html.TextBoxFor(x => x.Name)</td>
+                <td>@Html.ValidationMessageFor(x => x.Name)</td>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(x => x.Age)</td>
+                <td>@Html.TextBoxFor(x => x.Age)</td>
+                <td>@Html.ValidationMessageFor(x => x.Age)</td>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(x => x.HasSalary)</td>
+                <td>@Html.EditorFor(x => x.HasSalary)</td>
+                <td>@Html.ValidationMessageFor(x => x.HasSalary)</td>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(x => x.Income)</td>
+                <td>@Html.TextBoxFor(x => x.Income)</td>
+                <td>@Html.ValidationMessageFor(x => x.Income)</td>
+            </tr>
+            <tr>
+                <td colspan="3">@Html.ValueFor(x => x.Message)</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 10px; text-align: center">
+                    <input style="align-self: center" type="submit" value="Submit" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

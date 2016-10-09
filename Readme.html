@@ -32,6 +32,21 @@
 <li><a href="#filter-cancellation">Filter cancellation</a></li>
 </ol>
 </li>
+<li><a href="#validations">Validations</a>
+<ol>
+<li><a href="#client-side">Client side</a>
+<ol>
+<li><a href="#unobtrusive-validation">Unobtrusive validation</a></li>
+<li><a href="#iclientvalidatable">IClientValidatable</a></li>
+</ol>
+</li>
+<li><a href="#server-side">Server side</a>
+<ol>
+<li><a href="#data-annotation">Data Annotation</a></li>
+</ol>
+</li>
+</ol>
+</li>
 </ol>
 </li>
 <li><a href="#result-execution">Result Execution</a>
@@ -576,6 +591,161 @@ public ActionResult FilterByCustomActionFilterAttribute()
 <pre><code class="language-C#">public override void OnActionExecuting(ActionExecutingContext filterContext) 
 { 
     filterContext.Result = new EmptyResult();
+}
+</code></pre>
+<h3 id="validations">Validations</h3>
+<p>Validations allow to validate data input by the user. MVC propose validation technics for both client and server side.</p>
+<h4 id="client-side">Client side</h4>
+<p>The validations happen on users' browser and before the data gets posted back to the server.</p>
+<h5 id="unobtrusive-validation">Unobtrusive validation</h5>
+<p>Client side validation that don't need to write a ton of validation code. You just need to use the JQuery Validate Plugin and the Unobtrusive library.</p>
+<p>Unobtrusive Validation allows us to take the already-existing validation attributes and use them client-side.</p>
+<p>To enable it, you need to add the following configuration in the Global.asax file (or Web.config)</p>
+<pre><code class="language-C#">HtmlHelper.ClientValidationEnabled = true;
+HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
+</code></pre>
+<p>or</p>
+<pre><code class="language-xml">&lt;configuration&gt;
+  &lt;appSettings&gt;
+    &lt;add key=&quot;ClientValidationEnabled&quot; value=&quot;false&quot;/&gt; 
+    &lt;add key=&quot;UnobtrusiveJavaScriptEnabled&quot; value=&quot;false&quot;/&gt; 
+  &lt;/appSettings&gt;
+&lt;/configuration&gt;
+</code></pre>
+<h5 id="iclientvalidatable">IClientValidatable</h5>
+<p>This interface allows to enable client side validation on custom data annotation.</p>
+<p>To use this validation on client side, you need to:</p>
+<ul>
+<li>Create a class that derives from ValidationAttribute and IClientValidatable</li>
+</ul>
+<pre><code class="language-C#">public class ExcludeCharsAttribute: ValidationAttribute, IClientValidatable
+{
+    private readonly string chars;
+
+    public ExcludeCharsAttribute(string chars)
+        : base(&quot;The field {0} contains invalid character.&quot;)
+    {
+        this.chars = chars;
+    }
+
+    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    {
+        if (value != null)
+        {
+            var valueAsString = value.ToString();
+            for (var i = 0; i &lt; chars.Length; i++)
+            {
+                if (valueAsString.Contains(chars[i]))
+                {
+                    var errorMessage = FormatErrorMessage(validationContext.DisplayName);
+                    return new ValidationResult(errorMessage);
+                }
+            }
+        }
+        return ValidationResult.Success;
+    }
+
+    public IEnumerable&lt;ModelClientValidationRule&gt; GetClientValidationRules(ModelMetadata metadata, ControllerContext context)
+    {
+        var rule = new ModelClientValidationRule();
+        rule.ErrorMessage = FormatErrorMessage(metadata.GetDisplayName());
+        rule.ValidationParameters.Add(&quot;chars&quot;, chars);
+        rule.ValidationType = &quot;exclude&quot;;
+        yield return rule;
+    }
+}
+</code></pre>
+<ul>
+<li>Apply this new data annotation to the property you want to validate with</li>
+</ul>
+<pre><code class="language-C#">[ExcludeChars(&quot;0123456789&quot;)]
+public string Name { get; set; }
+</code></pre>
+<ul>
+<li>Create a new javascript file to add this new validation as an unobtrusive validation</li>
+</ul>
+<pre><code class="language-javascript">/// &lt;reference path=&quot;jquery.validate.js&quot; /&gt;
+/// &lt;reference path=&quot;jquery.validate.unobtrusive.js&quot; /&gt;
+
+$.validator.unobtrusive.adapters.addSingleVal(&quot;exclude&quot;, &quot;chars&quot;);
+$.validator.addMethod(&quot;exclude&quot;, function (value, element, exclude) {
+    if (value) {
+        for (var i = 0; i &lt; exclude.length; i++) {
+            if (jQuery.inArray(exclude[i], value) != -1) {
+                return false;
+            }
+        }
+    }
+    return true;
+});
+</code></pre>
+<ul>
+<li>Add this new javascript file in the bundle collection</li>
+</ul>
+<pre><code class="language-C#">bundles.Add(new ScriptBundle(&quot;~/bundles/jqueryval&quot;).Include(
+                             &quot;~/Scripts/jquery.validate*&quot;,
+                             &quot;~/Scripts/excludeValidation.js&quot;));
+</code></pre>
+<h4 id="server-side">Server side</h4>
+<h5 id="data-annotation">Data Annotation</h5>
+<p>It is an attribute which can be apply to the class' properties to apply a validation. It allow to do a single validation.</p>
+<p>To create a custom data annotation, you need to:</p>
+<ul>
+<li>Create a class that implement ValidationAttribute</li>
+</ul>
+<pre><code class="language-C#">public class ExcludeCharsAttribute: ValidationAttribute
+{
+    private readonly string chars;
+
+    public ExcludeCharsAttribute(string chars)
+        : base(&quot;The field {0} contains invalid character.&quot;)
+    {
+        this.chars = chars;
+    }
+
+    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    {
+        if (value != null)
+        {
+            var valueAsString = value.ToString();
+            for (var i = 0; i &lt; chars.Length; i++)
+            {
+                if (valueAsString.Contains(chars[i]))
+                {
+                    var errorMessage = FormatErrorMessage(validationContext.DisplayName);
+                    return new ValidationResult(errorMessage);
+                }
+            }
+        }
+        return ValidationResult.Success;
+    }
+}
+</code></pre>
+<ul>
+<li>Apply this custom data annotation to the property of a class you want to validate with.</li>
+</ul>
+<pre><code class="language-C#">[ExcludeChars(&quot;0123456789&quot;)]
+public string Name { get; set; }
+</code></pre>
+<h5 id="ivalidatableobject">IValidatableObject</h5>
+<p>It allows to implement some validation directly in the model class itself which may need to span multiple property values. It allow to do a multiple validations.</p>
+<p>To integrate validation in the object model, you need to:</p>
+<ul>
+<li>Create an object model that derives IValidatableObject</li>
+</ul>
+<pre><code class="language-C#">public class ValidationModel: IValidatableObject
+{
+   public int? Income { get; set; }
+
+   public bool HasSalary { get; set; }
+
+   public IEnumerable&lt;ValidationResult&gt; Validate(ValidationContext validationContext)
+   {
+       if (HasSalary &amp;&amp; (!Income.HasValue || Income &lt; 0))
+       {
+           yield return new ValidationResult(&quot;The field Income cannot be negative&quot;, new[] { &quot;Income&quot; });
+       }
+   }
 }
 </code></pre>
 <h2 id="result-execution">Result Execution</h2>
