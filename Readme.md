@@ -21,6 +21,8 @@
          5. [Filter scope](#filter-scope)
          6. [Filter cancellation](#filter-cancellation)  
    4. [Result Execution](#result-execution)
+      1. [Action Result](#action-result) 
+      2. [View Result](#view-result)
 3. [Http module](#http-module)
 
 # Application lifecycle
@@ -570,9 +572,112 @@ Within each filter type, the Order value specifies the run order. Within each fi
 - Last: specifies last.
 
 #### Filter cancellation
+You can cancel filter execution in the OnActionExecuting and OnResultExecuting methods by setting the Result property to a non-null value.
+```C#
+public override void OnActionExecuting(ActionExecutingContext filterContext) 
+{ 
+    filterContext.Result = new EmptyResult();
+}
+```
 
 ## Result Execution
+![Result Execution](./img/result-execution.png)
 
+It is the step where the result is sent back to the browser.
+
+Once the action result has been prepared, the result execution step starts. At this point, the Result Filters are executed before and after the result execution. 
+
+The result filters consist of two events:
+- OnResultExecuting: filter executed before the result execution.
+- OnResultExecuted: filter executed after the result execution. This is the last point in the request lifecycle.
+
+The result execution branches in to two separate routes. If the result is View Engine, the appropriate view engine Razor, ASPX or custom view engine is used to render partial view or view. If the Response is any other type, then it is sent directly without using any view engine.
+
+### Action Result
+MVC propose some existing action result:
+- ContentResult: returns a user-define content type.
+- JSonResult: returns a serialized JSON object.
+- EmptyResult: represents a return value that is used if the action method must return a null result.
+- ViewResult: renders a view as Web page.
+- PartialViewResult: renders a partial view, which defines a section of a view that can be rendered inside another view.
+- FileResult returns a binary output to write to the response.
+- JavaScriptResult: returns a script that can be executed on the client.
+- RedirectResult: redirects to another action method by using its URL.
+- RedirectToRouteResult: redirects to another action method.
+
+To create a custom action result, you need to:
+- Create a class that derives from ActionResult
+```C#
+public class XmlActionResult: ActionResult
+{
+    private readonly ResultModel model;
+
+    public XmlActionResult(ResultModel model)
+    {
+        this.model = model;
+    }
+
+    public override void ExecuteResult(ControllerContext context)
+    {
+        var httpContext = context.HttpContext;
+        httpContext.Response.Buffer = true;
+        httpContext.Response.Clear();
+
+        var response = context.HttpContext.Response;
+        response.ContentType = "application/xml";
+
+        using (var writer = new StringWriter())
+        {
+            var xml = new XmlSerializer(typeof(ResultModel));
+            xml.Serialize(writer, model);
+            httpContext.Response.Write(writer);
+        }
+    }
+}
+```
+- Use this new action result as a return type in a controller's method
+```C#
+[HttpPost]
+[Route("TestActionResult", Name = "TestActionResult_Post")]
+public ActionResult TestActionResult(string message)
+{
+    var model = new ResultModel();
+    model.Message = message;
+    return new XmlActionResult(model);
+}
+```
+
+### View Engine
+There are two view engines that MVC provides by default, Razor View Engine and Legacy View Engine (ASPX View Engine). Razor view engine is more sophisticated and fast compared to Legacy engine. 
+
+To create a custom view engine, you need to:
+- Create a class that derives from IViewEngine
+```C#
+public class MyViewEngine : IViewEngine
+{
+    public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+    {
+        //Finds the partial view by using the controller context.
+        return null;
+    }
+
+    public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+    {
+        //Finds the view by using the controller context.
+        return null;
+    }
+
+    public void ReleaseView(ControllerContext controllerContext, IView view)
+    {
+        //Releases the view by using the controller context.
+    }
+}
+```
+- Register this custom view engine in the engines collection in the Global.Asax file
+```C#
+ViewEngines.Engines.Clear(); // prevent to have several view engine
+ViewEngines.Engines.Add(new MyViewEngine());
+```
 
 # Http Module
 

@@ -34,7 +34,12 @@
 </li>
 </ol>
 </li>
-<li><a href="#result-execution">Result Execution</a></li>
+<li><a href="#result-execution">Result Execution</a>
+<ol>
+<li><a href="#action-result">Action Result</a></li>
+<li><a href="#view-result">View Result</a></li>
+</ol>
+</li>
 </ol>
 </li>
 <li><a href="#http-module">Http module</a></li>
@@ -567,7 +572,110 @@ public ActionResult FilterByCustomActionFilterAttribute()
 <li>Last: specifies last.</li>
 </ul>
 <h4 id="filter-cancellation">Filter cancellation</h4>
+<p>You can cancel filter execution in the OnActionExecuting and OnResultExecuting methods by setting the Result property to a non-null value.</p>
+<pre><code class="language-C#">public override void OnActionExecuting(ActionExecutingContext filterContext) 
+{ 
+    filterContext.Result = new EmptyResult();
+}
+</code></pre>
 <h2 id="result-execution">Result Execution</h2>
+<p><img src="./img/result-execution.png" alt="Result Execution" /></p>
+<p>It is the step where the result is sent back to the browser.</p>
+<p>Once the action result has been prepared, the result execution step starts. At this point, the Result Filters are executed before and after the result execution.</p>
+<p>The result filters consist of two events:</p>
+<ul>
+<li>OnResultExecuting: filter executed before the result execution.</li>
+<li>OnResultExecuted: filter executed after the result execution. This is the last point in the request lifecycle.</li>
+</ul>
+<p>The result execution branches in to two separate routes. If the result is View Engine, the appropriate view engine Razor, ASPX or custom view engine is used to render partial view or view. If the Response is any other type, then it is sent directly without using any view engine.</p>
+<h3 id="action-result">Action Result</h3>
+<p>MVC propose some existing action result:</p>
+<ul>
+<li>ContentResult: returns a user-define content type.</li>
+<li>JSonResult: returns a serialized JSON object.</li>
+<li>EmptyResult: represents a return value that is used if the action method must return a null result.</li>
+<li>ViewResult: renders a view as Web page.</li>
+<li>PartialViewResult: renders a partial view, which defines a section of a view that can be rendered inside another view.</li>
+<li>FileResult returns a binary output to write to the response.</li>
+<li>JavaScriptResult: returns a script that can be executed on the client.</li>
+<li>RedirectResult: redirects to another action method by using its URL.</li>
+<li>RedirectToRouteResult: redirects to another action method.</li>
+</ul>
+<p>To create a custom action result, you need to:</p>
+<ul>
+<li>Create a class that derives from ActionResult</li>
+</ul>
+<pre><code class="language-C#">public class XmlActionResult: ActionResult
+{
+    private readonly ResultModel model;
+
+    public XmlActionResult(ResultModel model)
+    {
+        this.model = model;
+    }
+
+    public override void ExecuteResult(ControllerContext context)
+    {
+        var httpContext = context.HttpContext;
+        httpContext.Response.Buffer = true;
+        httpContext.Response.Clear();
+
+        var response = context.HttpContext.Response;
+        response.ContentType = &quot;application/xml&quot;;
+
+        using (var writer = new StringWriter())
+        {
+            var xml = new XmlSerializer(typeof(ResultModel));
+            xml.Serialize(writer, model);
+            httpContext.Response.Write(writer);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>Use this new action result as a return type in a controller's method</li>
+</ul>
+<pre><code class="language-C#">[HttpPost]
+[Route(&quot;TestActionResult&quot;, Name = &quot;TestActionResult_Post&quot;)]
+public ActionResult TestActionResult(string message)
+{
+    var model = new ResultModel();
+    model.Message = message;
+    return new XmlActionResult(model);
+}
+</code></pre>
+<h3 id="view-engine">View Engine</h3>
+<p>There are two view engines that MVC provides by default, Razor View Engine and Legacy View Engine (ASPX View Engine). Razor view engine is more sophisticated and fast compared to Legacy engine.</p>
+<p>To create a custom view engine, you need to:</p>
+<ul>
+<li>Create a class that derives from IViewEngine</li>
+</ul>
+<pre><code class="language-C#">public class MyViewEngine : IViewEngine
+{
+    public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+    {
+        //Finds the partial view by using the controller context.
+        return null;
+    }
+
+    public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+    {
+        //Finds the view by using the controller context.
+        return null;
+    }
+
+    public void ReleaseView(ControllerContext controllerContext, IView view)
+    {
+        //Releases the view by using the controller context.
+    }
+}
+</code></pre>
+<ul>
+<li>Register this custom view engine in the engines collection in the Global.Asax file</li>
+</ul>
+<pre><code class="language-C#">ViewEngines.Engines.Clear(); // prevent to have several view engine
+ViewEngines.Engines.Add(new MyViewEngine());
+</code></pre>
 <h1 id="http-module">Http Module</h1>
 <p>It is an assembly that is called on every request that is made to your application.</p>
 <p>You can override the default behavior or add custom logic by letting you attach event handlers to HttpApplication events.</p>

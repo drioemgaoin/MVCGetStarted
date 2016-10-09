@@ -163,11 +163,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\CustomControllerActionInvoker.cs" />
+    <Compile Include="Action\XmlActionResult.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Binders\CustomModelBinder.cs" />
     <Compile Include="Constraint\CustomRouteConstraint.cs" />
+    <Compile Include="Controllers\TestActionResultController.cs" />
     <Compile Include="Controllers\TestFilterController.cs" />
     <Compile Include="Controllers\TestModelBindingController.cs" />
     <Compile Include="Controllers\TestRouteConstraintController.cs" />
@@ -214,6 +216,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Source\file.xml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -232,6 +235,7 @@
     <Content Include="Views\TestRouteConstraint\Result.cshtml" />
     <Content Include="Views\TestModelBinding\Index.cshtml" />
     <Content Include="Views\TestFilter\Index.cshtml" />
+    <Content Include="Views\TestActionResult\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

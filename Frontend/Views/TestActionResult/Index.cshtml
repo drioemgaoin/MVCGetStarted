@@ -1,0 +1,16 @@
+﻿@using (Html.BeginForm("TestActionResult", "TestActionResult", FormMethod.Post))
+{
+    <div style="margin: 50px">
+        <table>
+            <tr>
+                <td style="padding-right: 10px">Message</td>
+                <td>@Html.TextBox("Message")</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 10px; text-align: center">
+                    <input style="align-self: center" type="submit" value="Submit" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
