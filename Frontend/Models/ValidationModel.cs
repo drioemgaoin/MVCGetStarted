@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Frontend.Validation;
 
@@ -22,9 +23,9 @@ namespace Frontend.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (HasSalary && (!Income.HasValue || Income < 0))
+            if (HasSalary && (!Income.HasValue || Income <= 0))
             {
-                yield return new ValidationResult("The field Income cannot be negative", new[] { "Income" });
+                yield return new ValidationResult("The field Income cannot be negative or 0", new[] { "Income" });
             }
         }
     }

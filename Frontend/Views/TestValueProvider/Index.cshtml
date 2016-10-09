@@ -2,16 +2,19 @@
 
 @using (Html.BeginForm("Index", "TestValueProvider", FormMethod.Post))
 {
-    <table style="margin: 50px">
-        <tr>
-            <td style="padding-right: 10px">Name</td>
-            <td>@Html.TextBoxFor(x => x.Name)</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding-top: 10px; text-align: center">
-                <input style="align-self: center" type="submit" value="Submit"/>
-            </td>
-        </tr>
-    </table>
-    <div style="padding-top: 30px">@Model.Message</div>
+    <div style="margin: 50px">
+        <p>Input the name and you will have the message  "Welcome {0}!! I'm a message provided by the custom value provider"</p>
+        <table>
+            <tr>
+                <td style="padding-right: 10px">Name</td>
+                <td>@Html.TextBoxFor(x => x.Name)</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 10px; text-align: center">
+                    <input style="align-self: center" type="submit" value="Submit" />
+                </td>
+            </tr>
+        </table>
+        <div style="padding-top: 30px">@Model.Message</div>
+    </div>
 }

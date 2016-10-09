@@ -12,15 +12,15 @@ namespace Frontend.Controllers
         public ActionResult Index()
         {
             var model = new ResultModel();
-            HttpContext.Response.Cookies.Add(new HttpCookie("message", "Welcome {0}!! I'm a message provided by the custom value provider"));
+            HttpContext.Response.Cookies.Add(new HttpCookie("messageByCookie", "Welcome {0}!! I'm a message provided by the custom value provider"));
             return View(model);
         }
 
         [HttpPost]
         [Route("TestValueProvider", Name = "TestValueProvider_Post")]
-        public ActionResult Index(ResultModel model, string message)
+        public ActionResult Index(ResultModel model, string messageByCookie)
         {
-            model.Message = String.Format(message, model.Name);
+            model.Message = String.Format(messageByCookie, model.Name);
             return View(model);
         }
     }

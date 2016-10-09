@@ -1,7 +1,9 @@
 ﻿@model Frontend.Models.ResultModel
+
 <div style="margin: 50px">
     <div>
-        <h1>Test Route Constraint with Regular Expression/Custom Route Constraint</h1>
+        <p>Route constraint test with Regular Expression and Cutom Route Constraint</p>
+        <p>Each link test a success/fail scenario for each way to create a route constraint</p>
         <ul>
             <li>@Html.ActionLink("Success test by Reg exp", "RegularExpressionConstraint", "TestRouteConstraint", new {user = "rdiegoni"}, null)</li>
             <li>@Html.ActionLink("Fail test by Reg exp", "RegularExpressionConstraint", "TestRouteConstraint", new {user = "xxx"}, null)</li>

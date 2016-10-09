@@ -3,6 +3,9 @@
 @using (Html.BeginForm("Validate", "TestValidation", FormMethod.Post))
 {
     <div style="margin: 50px">
+        <p>Model binding test: creation a date model binder</p>
+        <p>Age: required validation and integer number validation from 0 to int.MaxValue</p>
+        <p>HasSalary + Income: model validation => valid if hasSalary and income > 0</p>
         <table>
             <tr>
                 <td>@Html.LabelFor(x => x.Name)</td>
