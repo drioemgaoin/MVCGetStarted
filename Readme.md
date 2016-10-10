@@ -26,7 +26,7 @@
             2. [IClientValidatable](#iclientvalidatable) 
          2. [Server side](#server-side)
             1. [Data Annotation](#data-annotation)    
-            2. [IValidatableObject](#ivalidatableObject)
+            2. [IValidatableObject](#ivalidatableobject)
       5. [Passing Data](#passing-data)
          1. [Passing Data Between a Controller and a View](#passing-data-between-a-controller-and-a-view)
          2. [Passing State between Action Methods](#passing-state-between-action-methods)
