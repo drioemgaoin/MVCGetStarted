@@ -47,6 +47,12 @@
 </li>
 </ol>
 </li>
+<li><a href="#passing-data">Passing Data</a>
+<ol>
+<li><a href="#passing-data-between-a-controller-and-a-view">Passing Data Between a Controller and a View</a></li>
+<li><a href="#passing-state-between-action-methods">Passing State between Action Methods</a></li>
+</ol>
+</li>
 </ol>
 </li>
 <li><a href="#result-execution">Result Execution</a>
@@ -747,6 +753,23 @@ public string Name { get; set; }
        }
    }
 }
+</code></pre>
+<h3 id="passing-data">Passing Data</h3>
+<h4 id="passing-data-between-a-controller-and-a-view">Passing Data Between a Controller and a View</h4>
+<p>To pass data to the view, you can:</p>
+<ul>
+<li>Use the ViewData property which returns a ViewDataDictionary object that has case-insensitive string keys. It requires typecasting for complex data type and check for null values to avoid error.</li>
+</ul>
+<pre><code class="language-C#">ViewData[&quot;key&quot;] = value
+</code></pre>
+<ul>
+<li>Use the ViewBag property which is a dynamic property that takes advantage of the new dynamic features in C# 4.0. ViewBag doesn’t require typecasting for complex data type.</li>
+</ul>
+<pre><code class="language-C#">ViewBag.key = value
+</code></pre>
+<h4 id="passing-state-between-action-methods">Passing State between Action Methods</h4>
+<p>An action method can store data in the controller's TempDataDictionary object before it calls the controller's RedirectToAction method to invoke the next action. The TempData property value is stored in session state. Any action method that is called after the TempDataDictionary value is set can get values from the object and then process or display them. The value of TempData persists until it is read or until the session times out.</p>
+<pre><code class="language-C#">TempData[&quot;key&quot;] = value
 </code></pre>
 <h2 id="result-execution">Result Execution</h2>
 <p><img src="./img/result-execution.png" alt="Result Execution" /></p>

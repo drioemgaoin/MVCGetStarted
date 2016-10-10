@@ -26,6 +26,9 @@
             2. [IClientValidatable](#iclientvalidatable) 
          2. [Server side](#server-side)
             1. [Data Annotation](#data-annotation)    
+      5. [Passing Data](#passing-data)
+         1. [Passing Data Between a Controller and a View](#passing-data-between-a-controller-and-a-view)
+         2. [Passing State between Action Methods](#passing-state-between-action-methods)
    4. [Result Execution](#result-execution)
       1. [Action Result](#action-result) 
       2. [View Engine](#view-engine)
@@ -745,6 +748,24 @@ public class ValidationModel: IValidatableObject
         }
     }
 }
+```
+
+### Passing Data
+#### Passing Data Between a Controller and a View
+To pass data to the view, you can:
+- Use the ViewData property which returns a ViewDataDictionary object that has case-insensitive string keys. It requires typecasting for complex data type and check for null values to avoid error.
+```C#
+ViewData["key"] = value
+```
+- Use the ViewBag property which is a dynamic property that takes advantage of the new dynamic features in C# 4.0. ViewBag doesn’t require typecasting for complex data type.
+```C#
+ViewBag.key = value
+```
+
+#### Passing State between Action Methods
+An action method can store data in the controller's TempDataDictionary object before it calls the controller's RedirectToAction method to invoke the next action. The TempData property value is stored in session state. Any action method that is called after the TempDataDictionary value is set can get values from the object and then process or display them. The value of TempData persists until it is read or until the session times out.
+```C#
+TempData["key"] = value
 ```
 
 ## Result Execution
