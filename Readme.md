@@ -4,7 +4,7 @@
    1. [Routing](#routing)
       1. [Url Routing Module](#url-routing-module)
       2. [Route Handler](#route-handler)
-      3. [Http Handler](#htp-handler)
+      3. [Http Handler](#http-handler)
    2. [Controller Initialization](#controller-initialization)
    3. [Action Execution](#action-execution)
       1. [Action Invoker](#action-invoker)
