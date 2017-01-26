@@ -611,8 +611,8 @@ or
 ```xml
 <configuration>
   <appSettings>
-    <add key="ClientValidationEnabled" value="false"/> 
-    <add key="UnobtrusiveJavaScriptEnabled" value="false"/> 
+    <add key="ClientValidationEnabled" value="true"/> 
+    <add key="UnobtrusiveJavaScriptEnabled" value="true"/> 
   </appSettings>
 </configuration>
 ```
